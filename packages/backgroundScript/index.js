@@ -59,9 +59,9 @@ const backgroundScript = {
             'https://www.google-analytics.com/analytics.js'
         ), 'ga');
 
-        ga('create', 'UA-126129673-2', 'auto');
+        ga('create', 'UA-130525010-1', 'auto');
         ga('set', 'checkProtocolTask', null);
-        ga('set', 'appName', 'TronLink');
+        ga('set', 'appName', 'AschLink');
         ga('set', 'appVersion', version);
     },
 

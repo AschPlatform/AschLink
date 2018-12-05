@@ -1,7 +1,8 @@
 import crypto from 'crypto';
 import bip39 from 'bip39';
-import bip32 from 'bip32';
-import TronWeb from 'tronweb';
+// import bip32 from 'bip32';
+// import TronWeb from 'tronweb';
+import aschjs from 'asch-js';
 
 const Utils = {
     encryptionAlgorithm: 'aes-256-ctr',
@@ -78,10 +79,13 @@ const Utils = {
 
     getAccountAtIndex(mnemonic, index = 0) {
         const seed = bip39.mnemonicToSeed(mnemonic);
-        const node = bip32.fromSeed(seed);
-        const child = node.derivePath(`m/44'/195'/${ index }'/0/0`);
-        const privateKey = child.privateKey.toString('hex');
-        const address = TronWeb.address.fromPrivateKey(privateKey);
+        // const node = bip32.fromSeed(seed);
+        // const child = node.derivePath(`m/44'/195'/${ index }'/0/0`);
+        // const privateKey = child.privateKey.toString('hex');
+        // const address = TronWeb.address.fromPrivateKey(privateKey);
+        const keypair = aschjs.crypto.getKeys(seed);
+        const privateKey = keypair.privateKey;
+        const address = aschjs.crypto.getAddress(keypair.publicKey);
 
         return {
             privateKey,

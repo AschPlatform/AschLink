@@ -4,8 +4,8 @@ import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
 import TransactionMapper from './TransactionMapper';
-
 import { BigNumber } from 'bignumber.js';
+import aschjs from 'asch-js';
 
 import {
     ACCOUNT_TYPE,
@@ -105,7 +105,9 @@ class Account {
     _importPrivateKey(privateKey) {
         try {
             this.privateKey = privateKey;
-            this.address = TronWeb.address.fromPrivateKey(privateKey);
+            // this.address = TronWeb.address.fromPrivateKey(privateKey);
+            const keypair = aschjs.crypto.getKeysFromPrivateKey(privateKey);
+            this.address = aschjs.crypto.getAddress(keypair.publicKey);
         } catch (ex) { // eslint-disable-line
             throw new Error('INVALID_PRIVATE_KEY');
         }
