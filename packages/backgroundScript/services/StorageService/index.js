@@ -40,7 +40,7 @@ const StorageService = {
     password: false,
 
     get needsMigrating() {
-        return localStorage.hasOwnProperty('TronLink_WALLET');
+        return localStorage.hasOwnProperty('AschLink_WALLET');
     },
 
     get hasAccounts() {
@@ -67,8 +67,10 @@ const StorageService = {
             return 'ERRORS.ALREADY_UNLOCKED';
         }
 
-        if(!await this.dataExists())
+        if(!await this.dataExists()) {
+            logger.error('data is not exist');
             return 'ERRORS.NOT_SETUP';
+        }
 
         try {
             for(let i = 0; i < this.storageKeys.length; i++) {
@@ -177,7 +179,7 @@ const StorageService = {
 
     migrate() {
         try {
-            const storage = localStorage.getItem('TronLink_WALLET');
+            const storage = localStorage.getItem('AschLink_WALLET');
             const decrypted = Utils.decrypt(
                 JSON.parse(storage),
                 this.password

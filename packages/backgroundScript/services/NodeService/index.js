@@ -74,9 +74,9 @@ const NodeService = {
         if(!StorageService.selectedAccount)
             return this._updateTronWeb(true);
 
-        this.tronWeb.setAddress(
-            StorageService.selectedAccount
-        );
+        // this.tronWeb.setAddress(
+        //     StorageService.selectedAccount
+        // );
     },
 
     save() {

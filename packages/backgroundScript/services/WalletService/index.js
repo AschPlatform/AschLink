@@ -60,8 +60,8 @@ class Wallet extends EventEmitter {
         if(error)
             return false;
 
-        localStorage.setItem('TronLink_WALLET.bak', localStorage.getItem('TronLink_WALLET'));
-        localStorage.removeItem('TronLink_WALLET');
+        localStorage.setItem('AschLink_WALLET.bak', localStorage.getItem('AschLink_WALLET'));
+        localStorage.removeItem('AschLink_WALLET');
 
         accounts.forEach(account => (
             this.importAccount(account)
@@ -93,7 +93,7 @@ class Wallet extends EventEmitter {
     _loadAccounts() {
         const accounts = StorageService.getAccounts();
         const selected = StorageService.selectedAccount;
-
+        logger.info(`getAccounts: ${ JSON.stringify(accounts) }`);
         Object.entries(accounts).forEach(([ address, account ]) => {
             const accountObj = new Account(
                 account.type,
@@ -101,8 +101,8 @@ class Wallet extends EventEmitter {
                 account.accountIndex
             );
 
-            accountObj.loadCache();
-            accountObj.update();
+            // accountObj.loadCache();
+            // accountObj.update();
 
             this.accounts[ address ] = accountObj;
         });
@@ -111,43 +111,43 @@ class Wallet extends EventEmitter {
     }
 
     async _pollAccounts() {
-        if(!this.shouldPoll) {
-            logger.info('Stopped polling');
-            return this.isPolling = false;
-        }
+        // if(!this.shouldPoll) {
+        //     logger.info('Stopped polling');
+        //     return this.isPolling = false;
+        // }
 
-        if(this.isPolling)
-            return;
+        // if(this.isPolling)
+        //     return;
 
-        this.isPolling = true;
-        const accounts = Object.values(this.accounts);
+        // this.isPolling = true;
+        // const accounts = Object.values(this.accounts);
 
-        // We could show a loading indicator for each
-        // individual account, and publish updates accordingly
-        // instead of in bulk
+        // // We could show a loading indicator for each
+        // // individual account, and publish updates accordingly
+        // // instead of in bulk
 
-        for(const account of accounts) {
-            await account.update();
+        // for(const account of accounts) {
+        //     await account.update();
 
-            account.updateTransactions()
-                .then(() => {
-                    if(account.address === this.selectedAccount)
-                        this.emit('setAccount', account.address);
+        //     account.updateTransactions()
+        //         .then(() => {
+        //             if(account.address === this.selectedAccount)
+        //                 this.emit('setAccount', account.address);
 
-                    this.emit('setAccounts', this.getAccounts());
-                });
+        //             this.emit('setAccounts', this.getAccounts());
+        //         });
 
-            if(account.address === this.selectedAccount)
-                this.emit('setAccount', account.address);
+        //     if(account.address === this.selectedAccount)
+        //         this.emit('setAccount', account.address);
 
-            this.emit('setAccounts', this.getAccounts());
-        }
+        //     this.emit('setAccounts', this.getAccounts());
+        // }
 
-        this.isPolling = false;
+        // this.isPolling = false;
 
-        setTimeout(() => (
-            this._pollAccounts()
-        ), 10 * 1000);
+        // setTimeout(() => (
+        //     this._pollAccounts()
+        // ), 10 * 1000);
     }
 
     async _updatePrice() {
@@ -332,7 +332,7 @@ class Wallet extends EventEmitter {
             solidityNode: node.solidityNode,
             eventServer: node.eventServer
         });
-
+        logger.info(`selectedAccount: ${ JSON.stringify(this.selectedAccount) }`);
         this.emit('setAccount', this.selectedAccount);
     }
 
@@ -657,6 +657,7 @@ class Wallet extends EventEmitter {
     }
 
     exportAccount() {
+        logger.info(`export selectedAccount: ${ JSON.stringify(this.selectAccount) }`);
         const {
             mnemonic,
             privateKey

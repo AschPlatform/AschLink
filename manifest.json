@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
-    "name": "TronLink",
+    "name": "AschLink",
     "version": "2.0.8",
     "version_name": "2.0.8",
-    "description": "An interactive browser extension for signing, receiving and broadcasting TRON transactions",
+    "description": "An interactive browser extension for signing, receiving and broadcasting ASCH transactions",
     "author": "Kondax <kondaxsolutions@gmail.com>",
     "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-IThiKMnsg0UHaLmP7sJxZpd/ohvINImwjxFJyxGFSlk=' https://*.sentry.io https://www.google-analytics.com; object-src 'self'",
     "permissions": [
@@ -14,7 +14,7 @@
     ],
     "browser_action": {
         "default_popup": "packages/popup/build/index.html",
-        "default_title": "TronLink"
+        "default_title": "AschLink"
     },
     "icons": {
 		"128": "packages/popup/static/icon.png"

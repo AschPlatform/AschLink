@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'components/Button';
-import TronWeb from 'tronweb';
-
+// import TronWeb from 'tronweb';
+import aschjs from 'asch-js';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { BUTTON_TYPE } from '@tronlink/lib/constants';
@@ -24,8 +24,9 @@ class PrivateKeyImport extends React.Component {
 
     onChange({ target: { value } }) {
         const { accounts } = this.props;
-        const address = TronWeb.address.fromPrivateKey(value);
-
+        // const address = TronWeb.address.fromPrivateKey(value);
+        const keypair = aschjs.crypto.getKeysFromPrivateKey(value);
+        const address = aschjs.crypto.getAddress(keypair.publicKey);
         let isValid = false;
 
         if(address)

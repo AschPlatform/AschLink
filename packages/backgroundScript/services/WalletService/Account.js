@@ -1,5 +1,5 @@
 import StorageService from '../StorageService';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
