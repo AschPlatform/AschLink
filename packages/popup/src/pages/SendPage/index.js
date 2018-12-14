@@ -3,7 +3,9 @@ import AccountDetails from 'components/AccountDetails';
 import CustomScroll from 'react-custom-scroll';
 import Input from 'components/Input';
 import Button from 'components/Button';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
+// import AschWeb from 'AschWeb';
+import AschJS from 'asch-js';
 import Dropdown from 'react-dropdown';
 
 import { connect } from 'react-redux';
@@ -34,6 +36,10 @@ class SendPage extends React.Component {
             valid: VALIDATION_STATE.NONE,
             value: ''
         },
+        memo: {
+            valid: VALIDATION_STATE.NONE,
+            value: ''
+        },
         token: {
             mode: TOKEN_MODE.TRX
         },
@@ -47,6 +53,7 @@ class SendPage extends React.Component {
 
         this.onRecipientChange = this.onRecipientChange.bind(this);
         this.onAmountChange = this.onAmountChange.bind(this);
+        this.onMemoChange = this.onMemoChange.bind(this);
         this.onTokenChange = this.onTokenChange.bind(this);
         this.onModeChange = this.onModeChange.bind(this);
         this.onSend = this.onSend.bind(this);
@@ -68,7 +75,7 @@ class SendPage extends React.Component {
         if(!address.length)
             return this.setState({ recipient });
 
-        if(!TronWeb.isAddress(address))
+        if(!AschJS.crypto.isAddress(address))
             recipient.valid = VALIDATION_STATE.INVALID;
         else recipient.valid = VALIDATION_STATE.VALID;
 
@@ -86,6 +93,20 @@ class SendPage extends React.Component {
                 valid: VALIDATION_STATE.NONE
             }
         }, () => this.validateAmount());
+    }
+
+    onMemoChange(memo) {
+        memo = memo.trim();
+        // const memoinfo = {
+        //     value: memo,
+        //     valid: VALIDATION_STATE.VALID
+        // };
+        this.setState({
+            memo: {
+                value: memo,
+                valid: VALIDATION_STATE.VALID
+            }
+        });
     }
 
     onTokenChange({ value: token }) {
@@ -135,56 +156,62 @@ class SendPage extends React.Component {
     }
 
     validateAmount() {
-        const {
-            mode,
-            name,
-            address
-        } = this.state.token;
+        // const {
+        //     mode,
+        //     name,
+        //     address
+        // } = this.state.token;
 
-        const {
-            basic,
-            smart
-        } = this.props.tokens;
+        // const {
+        //     basic,
+        //     smart
+        // } = this.props.tokens;
 
         const { value } = this.state.amount;
-        const amount = new BigNumber(value.trim());
+        // const amount = new BigNumber(value.trim());
 
-        if(
-            amount.isNaN() ||
-            amount.lte(0) ||
-            (
-                mode === TOKEN_MODE.TRC10 &&
-                !amount.isInteger()
-            )
-        ) {
-            return this.setState({
-                amount: {
-                    valid: VALIDATION_STATE.INVALID,
-                    value
-                }
-            });
-        }
+        // if(
+        //     amount.isNaN() ||
+        //     amount.lte(0) ||
+        //     (
+        //         mode === TOKEN_MODE.TRC10 &&
+        //         !amount.isInteger()
+        //     )
+        // ) {
+        //     return this.setState({
+        //         amount: {
+        //             valid: VALIDATION_STATE.INVALID,
+        //             value
+        //         }
+        //     });
+        // }
 
-        let balance = new BigNumber(0);
+        // let balance = new BigNumber(0);
 
-        if(mode === TOKEN_MODE.TRX)
-            balance = new BigNumber(this.props.account.balance).shiftedBy(-6);
+        // if(mode === TOKEN_MODE.TRX)
+        //     balance = new BigNumber(this.props.account.balance).shiftedBy(-6);
 
-        if(mode === TOKEN_MODE.TRC10)
-            balance = new BigNumber(basic[ name ]);
+        // if(mode === TOKEN_MODE.TRC10)
+        //     balance = new BigNumber(basic[ name ]);
 
-        if(mode === TOKEN_MODE.TRC20) {
-            const token = smart[ address ];
+        // if(mode === TOKEN_MODE.TRC20) {
+        //     const token = smart[ address ];
 
-            balance = new BigNumber(token.balance)
-                .shiftedBy(-token.decimals);
-        }
+        //     balance = new BigNumber(token.balance)
+        //         .shiftedBy(-token.decimals);
+        // }
 
+        // this.setState({
+        //     amount: {
+        //         valid: amount.lte(balance) ?
+        //             VALIDATION_STATE.VALID :
+        //             VALIDATION_STATE.INVALID,
+        //         value
+        //     }
+        // });
         this.setState({
             amount: {
-                valid: amount.lte(balance) ?
-                    VALIDATION_STATE.VALID :
-                    VALIDATION_STATE.INVALID,
+                valid: VALIDATION_STATE.VALID,
                 value
             }
         });
@@ -252,7 +279,7 @@ class SendPage extends React.Component {
             valid,
             value
         } = this.state.recipient;
-
+        const memo = this.state.memo;
         const { isLoading } = this.state;
 
         return (
@@ -263,6 +290,14 @@ class SendPage extends React.Component {
                     placeholder='SEND.RECIPIENT.PLACEHOLDER'
                     status={ valid }
                     onChange={ this.onRecipientChange }
+                    isDisabled={ isLoading }
+                />
+                <FormattedMessage id='SEND.MEMO' />
+                <Input
+                    value={ memo.value }
+                    placeholder='SEND.MEMO.PLACEHOLDER'
+                    status = { memo.valid }
+                    onChange={ this.onMemoChange }
                     isDisabled={ isLoading }
                 />
             </div>
@@ -338,8 +373,8 @@ class SendPage extends React.Component {
     renderAmount() {
         const { mode } = this.state.token;
         const { value } = this.state.amount;
+        // const { memo } = this.state.memo;
         const { isLoading } = this.state;
-
         // Move the tabs into their own component
 
         return (
@@ -395,6 +430,15 @@ class SendPage extends React.Component {
                                     this.renderSmartDropdown()
                         }
                     </div>
+                    {/* <div className='recipient hasBottomMargin'> */}
+                    {/* <FormattedMessage id='SEND.MEMO' /> */}
+                    {/* <Input
+                        value={ memo }
+                        placeholder='SEND.MEMO.PLACEHOLDER'
+                        onChange={ this.onMemoChange }
+                        isDisabled={ isLoading }
+                    /> */}
+                    {/* </div> */}
                     <Button
                         id={ `SEND.BUTTON.${ mode }` }
                         isLoading={ isLoading }

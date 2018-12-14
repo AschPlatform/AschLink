@@ -27,7 +27,8 @@
     "redux-starter-kit": "^0.2.0",
     "sweetalert2": "^7.29.2",
     "sweetalert2-react-content": "^1.0.1",
-    "tronweb": "^2.1.4"
+    "tronweb": "^2.1.4",
+    "AschWeb": "file:../../AschWeb/AschWeb"
   },
   "scripts": {
     "start": "react-scripts start",
