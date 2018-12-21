@@ -1,10 +1,10 @@
 import EventChannel from '@tronlink/lib/EventChannel';
 import Logger from '@tronlink/lib/logger';
 // import TronWeb from 'tronweb';
-import AschWeb from 'asch-web/src';
+// import AschWeb from 'asch-web/src';
 import Utils from '@tronlink/lib/utils';
 import RequestHandler from './handlers/RequestHandler';
-import ProxiedProvider from './handlers/ProxiedProvider';
+// import ProxiedProvider from './handlers/ProxiedProvider';
 
 const logger = new Logger('pageHook');
 
@@ -42,7 +42,7 @@ const pageHook = {
         //     new ProxiedProvider()
         // );
 
-        const aschWeb = new AschWeb(new ProxiedProvider(), false, false);
+        //const aschWeb = new AschWeb(new ProxiedProvider(), false, false);
 
         // this.proxiedMethods = {
         //     setAddress: aschWeb.setAddress.bind(aschWeb),
@@ -57,7 +57,7 @@ const pageHook = {
         //     this.sign(...args)
         // );
 
-        window.aschWeb = aschWeb;
+        // window.aschWeb = aschWeb;
     },
 
     _bindEventChannel() {
