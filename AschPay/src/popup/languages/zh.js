@@ -46,7 +46,7 @@ module.exports = {
     rememberPassword: '请牢记密码，忘记密码将无法找回',
     recommendNew: '推荐新用户使用',
     recommendOld: '推荐已有Tron账户的用户使用',
-    savePrivateKey: '请注意：创建新账号时，请及时导出对应的私钥，并保存于安全的地方，不要将私钥泄露给任何人',
+    savePrivateKey: '请注意：创建新账号时，请及时导出对应的主密码，并保存于安全的地方，不要将私钥泄露给任何人',
     privateKeyOnly: '私钥将是您找回账户的唯一方式',
     noMoreRecord: '无更多记录',
     noRecord: '无交易记录',

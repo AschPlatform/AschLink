@@ -3,6 +3,8 @@ import crypto from 'crypto'
 import ByteArray from './ByteArray'
 import { ec as EC } from 'elliptic'
 import { keccak256 } from 'js-sha3'
+import AschJS from 'asch-js'
+import bip39 from 'bip39'
 
 import {
   ENCRYPTION_ALGORITHM,
@@ -341,12 +343,22 @@ export default class utils {
     return ByteArray.fromHexString(priKeyHex)
   }
 
+  //
+  static generateMnemonic () {
+    return bip39.generateMnemonic(128)
+  }
+
   static generateAccount () {
-    let priKeyBytes = this.genPriKey()
-    let privateKey = ByteArray.toHexString(priKeyBytes)
-    let address = this.privateKeyToAddress(privateKey)
-    // let password = base64EncodeToString(priKeyBytes)
+    // let priKeyBytes = this.genPriKey()
+    // let privateKey = ByteArray.toHexString(priKeyBytes)
+    // let address = this.privateKeyToAddress(privateKey)
+    // // let password = base64EncodeToString(priKeyBytes)
+    let mnemonic = bip39.generateMnemonic(128)
+    let keypair = AschJS.crypto.getKeys(mnemonic)
+    let privateKey = keypair.privateKey
+    let address = AschJS.crypto.getAddress(keypair.publicKey)
     return {
+      mnemonic,
       privateKey,
       address
     }

@@ -22,11 +22,11 @@
       :visible.sync="currentCreateVisible">
       <div class="warm-tip">{{$t('message.savePrivateKey')}}</div>
       <section class="privateKey-area">
-        {{currentCreateAccount.privateKey}}
+        {{currentCreateAccount.mnemonic}}
       </section>
       <div class="warm-tip">{{$t('message.privateKeyOnly')}}</div>
       <span slot="footer" class="dialog-footer">
-        <el-button class="full-btn" type="primary" v-clipboard:copy="currentCreateAccount.privateKey"
+        <el-button class="full-btn" type="primary" v-clipboard:copy="currentCreateAccount.mnemonic"
                    v-clipboard:success="copySuccess"
                    v-clipboard:error="copyError">{{$t('button.copyPrivate')}}</el-button>
         <el-button class="full-btn gradual-button mt20" style="margin-left: 0 !important;" @click="jumpHome">{{$t('button.doneCopy')}}</el-button>
@@ -66,7 +66,7 @@ export default {
       'setCurrentCreateVisible'
     ]),
     closedDialog () {
-      this.setCurrentCreateAccount({ privateKey: '', address: '', name: '' })
+      this.setCurrentCreateAccount({ mnemonic: '', privateKey: '', address: '', name: '' })
     },
     copySuccess () {
       this.$kalert({
@@ -80,7 +80,8 @@ export default {
     },
     createAccount () {
       const account = utils.generateAccount()
-      this.setCurrentCreateAccount({ privateKey: account.privateKey, address: account.address, name: createAccountName() })
+      console.log('mnemonic:', account.mnemonic)
+      this.setCurrentCreateAccount({ mnemonic: account.mnemonic, privateKey: account.privateKey, address: account.address, name: createAccountName() })
       this.setCurrentCreateVisible(true)
     },
     importAccount () {
