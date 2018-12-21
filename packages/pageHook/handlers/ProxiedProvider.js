@@ -1,8 +1,11 @@
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
+// import AschWeb from '../../../AschWeb/AschWeb';
+import AschWeb from 'asch-web/src';
 import Logger from '@tronlink/lib/logger';
 import axios from 'axios';
 
-const { HttpProvider } = TronWeb.providers;
+//  const { HttpProvider } = TronWeb.providers;
+const { HttpProvider } = AschWeb.providers;
 const logger = new Logger('ProxiedProvider');
 
 class ProxiedProvider extends HttpProvider {

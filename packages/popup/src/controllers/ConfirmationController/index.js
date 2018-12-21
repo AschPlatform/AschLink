@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'components/Button';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
+import AschWeb from 'asch-web/src';
 import Dropdown from 'react-dropdown';
 
 import { PopupAPI } from '@tronlink/lib/api';
@@ -144,13 +145,13 @@ class ConfirmationController extends React.Component {
             meta.push({ key: 'CONFIRMATIONS.COST', value: formatNumber(input.frozen_balance / 1000000) });
 
         if(input.asset_name)
-            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: TronWeb.toUtf8(input.asset_name) });
+            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: AschWeb.toUtf8(input.asset_name) });
 
         if(input.token_id)
-            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: TronWeb.toUtf8(input.token_id) });
+            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: AschWeb.toUtf8(input.token_id) });
 
         if(input.to_address) {
-            const address = TronWeb.address.fromHex(input.to_address);
+            const address = AschWeb.toUtf8(input.to_address);// TronWeb.address.fromHex(input.to_address);
             const trimmed = [
                 address.substr(0, 16),
                 address.substr(28)

@@ -1,6 +1,7 @@
 import EventChannel from '@tronlink/lib/EventChannel';
 import Logger from '@tronlink/lib/logger';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
+import AschWeb from 'asch-web/src';
 import Utils from '@tronlink/lib/utils';
 import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
@@ -14,7 +15,7 @@ const pageHook = {
     },
 
     init() {
-        this._bindTronWeb();
+        this._bindAschWeb();
         this._bindEventChannel();
         this._bindEvents();
 
@@ -25,36 +26,38 @@ const pageHook = {
             if(node.fullNode)
                 this.setNode(node);
 
-            logger.info('TronLink initiated');
+            logger.info('AschLink initiated');
         }).catch(err => {
-            logger.info('Failed to initialise TronWeb', err);
+            logger.info('Failed to initialise AschWeb', err);
         });
     },
 
-    _bindTronWeb() {
-        if(window.tronWeb !== undefined)
-            logger.warn('TronWeb is already initiated. TronLink will overwrite the current instance');
+    _bindAschWeb() {
+        if(window.aschWeb !== undefined)
+            logger.warn('AschWeb is already initiated. AschLink will overwrite the current instance');
 
-        const tronWeb = new TronWeb(
-            new ProxiedProvider(),
-            new ProxiedProvider(),
-            new ProxiedProvider()
-        );
+        // const tronWeb = new TronWeb(
+        //     new ProxiedProvider(),
+        //     new ProxiedProvider(),
+        //     new ProxiedProvider()
+        // );
 
-        this.proxiedMethods = {
-            setAddress: tronWeb.setAddress.bind(tronWeb),
-            sign: tronWeb.trx.sign.bind(tronWeb)
-        };
+        const aschWeb = new AschWeb(new ProxiedProvider(), false, false);
 
-        [ 'setPrivateKey', 'setAddress', 'setFullNode', 'setSolidityNode', 'setEventServer' ].forEach(method => (
-            tronWeb[ method ] = () => new Error('TronLink has disabled this method')
-        ));
+        // this.proxiedMethods = {
+        //     setAddress: aschWeb.setAddress.bind(aschWeb),
+        //     sign: aschWeb.asch.buildAndSign.bind(aschWeb)
+        // };
 
-        tronWeb.trx.sign = (...args) => (
-            this.sign(...args)
-        );
+        // [ 'setPrivateKey', 'setAddress', 'setFullNode' ].forEach(method => (
+        //     aschWeb[ method ] = () => new Error('TronLink has disabled this method')
+        // ));
 
-        window.tronWeb = tronWeb;
+        // aschWeb.trx.sign = (...args) => (
+        //     this.sign(...args)
+        // );
+
+        window.aschWeb = aschWeb;
     },
 
     _bindEventChannel() {
@@ -76,15 +79,14 @@ const pageHook = {
         // logger.info('TronLink: New address configured');
 
         this.proxiedMethods.setAddress(address);
-        tronWeb.ready = true;
+        //window.aschWeb.ready = true;
     },
 
     setNode(node) {
         // logger.info('TronLink: New node configured');
-
-        tronWeb.fullNode.configure(node.fullNode);
-        tronWeb.solidityNode.configure(node.solidityNode);
-        tronWeb.eventServer.configure(node.eventServer);
+        // window.aschWeb.fullNode.configure(node.fullNode);
+        // aschWeb.solidityNode.configure(node.solidityNode);
+        // aschWeb.eventServer.configure(node.eventServer);
     },
 
     sign(transaction, privateKey = false, useTronHeader = true, callback = false) {
@@ -107,8 +109,8 @@ const pageHook = {
         if(!transaction)
             return callback('Invalid transaction provided');
 
-        if(!tronWeb.ready)
-            return callback('User has not unlocked wallet');
+        // if(!window.aschWeb.ready)
+        //     return callback('User has not unlocked wallet');
 
         this.request('sign', {
             transaction,

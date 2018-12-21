@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
 
 import { SUPPORTED_CONTRACTS } from '@tronlink/lib/constants';
 
@@ -87,7 +87,7 @@ const renderType = (type, direction) => {
 };
 
 const transformAddress = address => {
-    const transformedAddress = TronWeb.address.fromHex(address);
+    const transformedAddress = address;//TronWeb.address.fromHex(address);
 
     const shortAddress = [
         transformedAddress.substr(0, 20),

@@ -12,8 +12,8 @@ class EventChannel extends EventEmitter {
     }
 
     _registerEventListener() {
-        window.addEventListener('message', ({ data: { isTronLink = false, message, source } }) => {
-            if(!isTronLink || (!message && !source))
+        window.addEventListener('message', ({ data: { isAschLink = false, message, source } }) => {
+            if(!isAschLink || (!message && !source))
                 return;
 
             if(source === this._channelKey)
@@ -38,7 +38,7 @@ class EventChannel extends EventEmitter {
                 data
             },
             source: this._channelKey,
-            isTronLink: true
+            isAschLink: true
         }, '*');
     }
 }

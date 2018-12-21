@@ -1,9 +1,10 @@
 import StorageService from '../StorageService';
 import randomUUID from 'uuid/v4';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
+import AschWeb from 'asch-web/src';
 import Logger from '@tronlink/lib/logger';
 
-import { BigNumber } from 'bignumber.js';
+// import { BigNumber } from 'bignumber.js';
 
 const logger = new Logger('NodeService');
 
@@ -11,16 +12,18 @@ const NodeService = {
     _nodes: {
         'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
             name: 'Mainnet',
-            fullNode: 'https://api.trongrid.io',
+            fullNode: 'http://mainnet.asch.io',
             solidityNode: 'https://api.trongrid.io',
             eventServer: 'https://api.trongrid.io',
+            isMainnet: true,
             default: true // false
         },
         '6739be94-ee43-46af-9a62-690cf0947269': {
             name: 'Shasta Testnet',
-            fullNode: 'https://api.shasta.trongrid.io',
+            fullNode: 'http://testnet.asch.io',
             solidityNode: 'https://api.shasta.trongrid.io',
             eventServer: 'https://api.shasta.trongrid.io',
+            isMainnet: false,
             default: true
         }
     },
@@ -47,32 +50,33 @@ const NodeService = {
 
     init() {
         this._read();
-        this._updateTronWeb();
+        this._updateAschWeb();
     },
 
-    _updateTronWeb(skipAddress = false) {
+    _updateAschWeb(skipAddress = false) {
         const {
             fullNode,
-            solidityNode,
-            eventServer
+            isMainnet
         } = this.getCurrentNode();
 
-        this.tronWeb = new TronWeb(
-            fullNode,
-            solidityNode,
-            eventServer
-        );
+        // this.tronWeb = new TronWeb(
+        //     fullNode,
+        //     solidityNode,
+        //     eventServer
+        // );
+
+        this.aschWeb = new AschWeb(fullNode, false, isMainnet);
 
         if(!skipAddress)
             this.setAddress();
     },
 
     setAddress() {
-        if(!this.tronWeb)
-            this._updateTronWeb();
+        if(!this.aschWeb)
+            this._updateAschWeb();
 
         if(!StorageService.selectedAccount)
-            return this._updateTronWeb(true);
+            return this._updateAschWeb(true);
 
         // this.tronWeb.setAddress(
         //     StorageService.selectedAccount
@@ -85,7 +89,7 @@ const NodeService = {
         ));
 
         StorageService.selectNode(this._selectedNode);
-        this._updateTronWeb();
+        this._updateAschWeb();
     },
 
     getNodes() {
@@ -103,7 +107,7 @@ const NodeService = {
         StorageService.selectNode(nodeID);
 
         this._selectedNode = nodeID;
-        this._updateTronWeb();
+        this._updateAschWeb();
     },
 
     addNode(node) {
@@ -118,23 +122,23 @@ const NodeService = {
         return nodeID;
     },
 
-    async getSmartToken(address) {
-        try {
-            const contract = await this.tronWeb.contract().at(address);
+    // async getSmartToken(address) {
+    //     try {
+    //         const contract = await this.tronWeb.contract().at(address);
 
-            if(!contract.name && !contract.symbol && !contract.decimals)
-                return false;
+    //         if(!contract.name && !contract.symbol && !contract.decimals)
+    //             return false;
 
-            return {
-                name: await contract.name().call(),
-                symbol: await contract.symbol().call(),
-                decimals: new BigNumber(await contract.decimals().call()).toNumber()
-            };
-        } catch(ex) {
-            logger.error(`Failed to fetch token ${ address }:`, ex);
-            return false;
-        }
-    }
+    //         return {
+    //             name: await contract.name().call(),
+    //             symbol: await contract.symbol().call(),
+    //             decimals: new BigNumber(await contract.decimals().call()).toNumber()
+    //         };
+    //     } catch(ex) {
+    //         logger.error(`Failed to fetch token ${ address }:`, ex);
+    //         return false;
+    //     }
+    // }
 };
 
 export default NodeService;

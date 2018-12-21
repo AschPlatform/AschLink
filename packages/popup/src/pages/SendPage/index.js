@@ -19,6 +19,7 @@ import {
 } from 'react-intl';
 
 import './SendPage.scss';
+import { logger } from 'handlebars';
 
 const TOKEN_MODE = {
     TRX: 'TRX',
@@ -127,32 +128,34 @@ class SendPage extends React.Component {
     }
 
     onModeChange(mode) {
-        const {
-            basic,
-            smart
-        } = this.props.tokens;
+        // const {
+        //     basic,
+        //     smart
+        // } = this.props.tokens;
 
         const token = {
             mode
         };
 
-        if(mode === TOKEN_MODE.TRC10 && !Object.keys(basic).length)
-            return;
+        // if(mode === TOKEN_MODE.TRC10 && !Object.keys(basic).length)
+        //     return;
 
-        if(mode === TOKEN_MODE.TRC20 && !Object.keys(smart).length)
-            return;
+        // if(mode === TOKEN_MODE.TRC20 && !Object.keys(smart).length)
+        //     return;
 
         if(mode === TOKEN_MODE.TRC10)
-            token.name = Object.keys(basic)[ 0 ];
-
-        if(mode === TOKEN_MODE.TRC20) {
-            token.address = Object.keys(smart)[ 0 ];
-            token.decimals = Object.values(smart)[ 0 ].decimals;
-        }
+            token.name = 'XCT';//Object.keys(basic)[ 0 ];
+            
+        if(mode === TOKEN_MODE.TRC20) //{
+            token.name = 'BCH';
+            // token.address = Object.keys(smart)[ 0 ];
+            // token.decimals = Object.values(smart)[ 0 ].decimals;
+        //}
 
         this.setState({
             token
         }, () => this.validateAmount());
+        console.info('send page state:', this.state);
     }
 
     validateAmount() {
@@ -305,26 +308,28 @@ class SendPage extends React.Component {
     }
 
     renderBasicDropdown() {
-        const { basic } = this.props.tokens;
-        const { name } = this.state.token;
-        const { formatNumber } = this.props.intl;
+        // const { basic } = this.props.tokens;
+        // const { name } = this.state.token;
+        // const { formatNumber } = this.props.intl;
         const { isLoading } = this.state;
 
-        const options = Object.entries(basic).map(([ token, balance ]) => ({
-            value: token,
-            label: `${ token } (${ formatNumber(balance) })`
-        }));
+        // const options = Object.entries(basic).map(([ token, balance ]) => ({
+        //     value: token,
+        //     label: `${ token } (${ formatNumber(balance) })`
+        // }));
 
-        if(!basic[ name ]) {
-            this.reset();
-            return null;
-        }
+        // if(!basic[ name ]) {
+        //     this.reset();
+        //     return null;
+        // }
 
-        const selected = {
-            value: name,
-            label: `${ name } (${ formatNumber(basic[ name ]) })`
-        };
+        // const selected = {
+        //     value: name,
+        //     label: `${ name } (${ formatNumber(basic[ name ]) })`
+        // };
 
+        const options = ['XCT', 'KMC'];
+        const selected = 'KMC';
         return (
             <Dropdown
                 className='dropdown'
@@ -337,28 +342,29 @@ class SendPage extends React.Component {
     }
 
     renderSmartDropdown() {
-        const { smart } = this.props.tokens;
-        const { address } = this.state.token;
-        const { formatNumber } = this.props.intl;
+        // const { smart } = this.props.tokens;
+        // const { address } = this.state.token;
+        // const { formatNumber } = this.props.intl;
         const { isLoading } = this.state;
 
-        const options = Object.entries(smart).map(([ address, { balance, decimals, symbol } ]) => ({
-            value: address,
-            label: `${ symbol } (${ formatNumber(new BigNumber(balance).shiftedBy(-decimals)) })`
-        }));
+        // const options = Object.entries(smart).map(([ address, { balance, decimals, symbol } ]) => ({
+        //     value: address,
+        //     label: `${ symbol } (${ formatNumber(new BigNumber(balance).shiftedBy(-decimals)) })`
+        // }));
 
-        const token = smart[ address ];
+        // const token = smart[ address ];
 
-        if(!token) {
-            this.reset();
-            return null;
-        }
+        // if(!token) {
+        //     this.reset();
+        //     return null;
+        // }
 
-        const selected = {
-            value: address,
-            label: `${ token.symbol } (${ formatNumber(new BigNumber(token.balance).shiftedBy(-token.decimals)) })`
-        };
-
+        // const selected = {
+        //     value: address,
+        //     label: `${ token.symbol } (${ formatNumber(new BigNumber(token.balance).shiftedBy(-token.decimals)) })`
+        // };
+        const options = ['BTC', 'BCH', 'ETH', 'EOS'];
+        const selected = 'BCH';
         return (
             <Dropdown
                 className='dropdown'

@@ -10,6 +10,7 @@
     "lint": "npx eslint . --fix"
   },
   "dependencies": {
+    "asch-web": "git+https://github.com/AschPlatform/AschWeb.git",
     "extensionizer": "^1.0.1",
     "tronweb": "^2.1.4"
   }

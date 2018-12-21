@@ -8,5 +8,8 @@
   "scripts": {
     "build": "webpack --config ../../webpack.config.js --progress --colors -o ../../dist/pageHook.js",
     "lint": "npx eslint . --fix"
+  },
+  "dependencies": {
+    "asch-web": "git+https://github.com/AschPlatform/AschWeb.git"
   }
 }

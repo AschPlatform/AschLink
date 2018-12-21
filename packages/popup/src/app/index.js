@@ -7,7 +7,7 @@ import { PopupAPI } from '@tronlink/lib/api';
 import { APP_STATE } from '@tronlink/lib/constants';
 
 import RegistrationController from 'controllers/RegistrationController';
-import LoginController from 'controllers/LoginController';
+// import LoginController from 'controllers/LoginController';
 import WalletCreationController from 'controllers/WalletCreationController';
 import CreateAccountController from 'controllers/CreateAccountController';
 import RestoreAccountController from 'controllers/RestoreAccountController';
@@ -25,7 +25,8 @@ class App extends React.Component {
             case APP_STATE.UNINITIALISED:
                 return <RegistrationController />;
             case APP_STATE.PASSWORD_SET:
-                return <LoginController />;
+                return <PageController />;
+                // return <LoginController />;
             case APP_STATE.UNLOCKED:
                 return <WalletCreationController />;
             case APP_STATE.CREATING:

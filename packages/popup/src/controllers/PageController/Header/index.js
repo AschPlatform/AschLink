@@ -4,6 +4,9 @@ import { FormattedMessage } from 'react-intl';
 import { PAGES } from '@tronlink/lib/constants';
 import { connect } from 'react-redux';
 
+import refreshIcon from '../../../assets/images/refresh-icon.png';
+import settingIcon from '../../../assets/images/setting-icon.png'
+
 import './Header.scss';
 
 const PageLink = props => {
@@ -44,24 +47,34 @@ class Header extends React.Component {
 
         return (
             <div className='header'>
-                <div className='titleContainer'>
-                    <FormattedMessage
-                        id={ `TITLES.${ title }` }
-                        children={ text => (
-                            <span className='title'>
+                <div className='navigationBar'>
+                    <div className='navigationLeft'>
+
+                    </div>
+                    <div className='titleContainer'>
+                        <FormattedMessage
+                            id={ `TITLES.${ title }` }
+                            children={ text => (
+                                <span className='title'>
+                                    { text }
+                                </span>
+                            )}
+                        />
+                        { /*subTitle ? <FormattedMessage id={ subTitle } children={ text => (
+                            <span className='subTitle'>
                                 { text }
                             </span>
-                        )}
-                    />
-                    { /*subTitle ? <FormattedMessage id={ subTitle } children={ text => (
+                        )} /> : ''*/ }
                         <span className='subTitle'>
-                            { text }
+                            { selectedAccount }
                         </span>
-                    )} /> : ''*/ }
-                    <span className='subTitle'>
-                        { selectedAccount }
-                    </span>
+                    </div>
+                    <div className='navigationRight'>
+                        <img src={ refreshIcon } alt='' />
+                        <img src={ settingIcon } alt='' />
+                    </div>
                 </div>
+
                 <div className='pageLinks'>
                     { pages.map(( pageKey, index) => (
                         <PageLink

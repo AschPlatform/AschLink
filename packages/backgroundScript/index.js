@@ -5,7 +5,7 @@ import StorageService from './services/StorageService';
 import WalletService from './services/WalletService';
 import Utils from '@tronlink/lib/utils';
 import transactionBuilder from '@tronlink/lib/transactionBuilder';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
 
 import * as Sentry from '@sentry/browser';
 
@@ -33,7 +33,7 @@ const backgroundScript = {
     run() {
         BackgroundAPI.init(duplex);
 
-        this.bindAnalytics();
+        // this.bindAnalytics();
         this.bindPopupDuplex();
         this.bindTabDuplex();
         this.bindWalletEvents();
@@ -116,7 +116,7 @@ const backgroundScript = {
         duplex.on('addNode', this.walletService.addNode);
         // duplex.on('deleteNode', this.nodeService.deleteNode);
         duplex.on('getNodes', this.nodeService.getNodes);
-        duplex.on('getSmartToken', this.nodeService.getSmartToken);
+        // duplex.on('getSmartToken', this.nodeService.getSmartToken);
     },
 
     bindTabDuplex() {
@@ -208,18 +208,18 @@ const backgroundScript = {
 
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
 
-                        if(contractType === 'TriggerSmartContract') {
-                            const value = input.call_value || 0;
+                        // if(contractType === 'TriggerSmartContract') {
+                        //     const value = input.call_value || 0;
 
-                            ga('send', 'event', {
-                                eventCategory: 'Smart Contract',
-                                eventAction: 'Used Smart Contract',
-                                eventLabel: TronWeb.address.fromHex(input.contract_address),
-                                eventValue: value,
-                                referrer: hostname,
-                                userId: Utils.hash(input.owner_address)
-                            });
-                        }
+                        //     ga('send', 'event', {
+                        //         eventCategory: 'Smart Contract',
+                        //         eventAction: 'Used Smart Contract',
+                        //         eventLabel: TronWeb.address.fromHex(input.contract_address),
+                        //         eventValue: value,
+                        //         referrer: hostname,
+                        //         userId: Utils.hash(input.owner_address)
+                        //     });
+                        // }
 
                         if(contractType === 'TriggerSmartContract' && whitelist) {
                             const expiration = whitelist[ hostname ];

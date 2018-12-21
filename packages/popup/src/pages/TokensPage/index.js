@@ -2,7 +2,8 @@ import React from 'react';
 import Button from 'components/Button';
 import Input from 'components/Input';
 import CustomScroll from 'react-custom-scroll';
-import TronWeb from 'tronweb';
+// import TronWeb from 'tronweb';
+import AschWeb from 'asch-web/src';
 
 import { BigNumber } from 'bignumber.js';
 import { connect } from 'react-redux';
@@ -81,7 +82,7 @@ class TokensPage extends React.Component {
         let isValid = !error && address.length === 34;
 
         try {
-            isValid = isValid && TronWeb.isAddress(address);
+            isValid = isValid && AschWeb.isAddress(address);
         } catch {}
 
         this.setState({
