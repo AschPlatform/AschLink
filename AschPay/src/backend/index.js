@@ -10,7 +10,7 @@ import Storage from '../lib/storage'
 import TabsMessage from '../messages/TabsMessage'
 import * as TabsMessageTypes from '../messages/TabsMessageTypes'
 import utils from '../lib/utils'
-import TronWeb from 'tronweb'
+import AschWeb from 'tronweb'
 
 // eslint-disable-next-line
 let seed = ''
@@ -51,7 +51,7 @@ export default class Background {
         Background.setTimeout(sendResponse, message.payload)
         break
       case InternalMessageTypes.INIT_TRONWEB:
-        Background.initTronWeb(sendResponse)
+        Background.initAschWeb(sendResponse)
         break
       case InternalMessageTypes.SIGNATURE:
         Background.signature(sendResponse, message.payload)
@@ -104,7 +104,7 @@ export default class Background {
     timeoutLocker = setTimeout(() => { seed = '' }, intervalTime * 1000)
   }
 
-  static initTronWeb (sendResponse) {
+  static initAschWeb (sendResponse) {
     sendResponse({
       address: '',
       node: {
@@ -122,20 +122,20 @@ export default class Background {
   static signature (sendResponse, payload) {
     this.lockGuard(sendResponse, async () => {
       try {
-        const tronWeb = Background._getTronWeb()
+        const aschWeb = Background._getAschWeb()
         const { transaction, input, domain } = payload
         const contractType = transaction.raw_data.contract[0].type
         const {
           mapped,
           error
-        } = await mapTransaction(tronWeb, contractType, input)
+        } = await mapTransaction(aschWeb, contractType, input)
         if (error) {
           sendResponse(Error.signatureError('signature_rejected', 'User rejected the signature request'))
         }
         if (!mapped) {
           sendResponse(Error.signatureError('signature_rejected', 'User rejected the signature request'))
         }
-        const signedTransaction = await tronWeb.trx.signTransaction(mapped.transaction || mapped, this._currentPrivateKey(), 0)
+        const signedTransaction = await aschWeb.trx.signTransaction(mapped.transaction || mapped, this._currentPrivateKey(), 0)
         const store = this._getLocalData()
         // TriggerSmartContract
         if (signedTransaction.raw_data.contract[0].type === 'TriggerSmartContract') {
@@ -235,11 +235,11 @@ export default class Background {
         }
       }
       if (account) {
-        const tronWeb = this._getTronWeb()
+        const aschWeb = this._getAschWeb()
         const { transaction } = message.payload
         let privateKey = utils.decrypt(account.keystore, seed)
-        const signTransaction = await tronWeb.trx.signTransaction(transaction, privateKey, 0)
-        const result = await tronWeb.trx.sendRawTransaction(signTransaction)
+        const signTransaction = await aschWeb.trx.signTransaction(transaction, privateKey, 0)
+        const result = await aschWeb.trx.sendRawTransaction(signTransaction)
         // result is object {result: result}
         sendResponse(result)
       } else {
@@ -265,11 +265,11 @@ export default class Background {
     return utils.decrypt(keystore, seed)
   }
 
-  static _getTronWeb () {
+  static _getAschWeb () {
     const store = this._getLocalData()
-    const tronWeb = new TronWeb(store.currentNetwork.fullNodeUrl, store.currentNetwork.solidityUrl, store.currentNetwork.eventGridUrl)
-    tronWeb.defaultAccount = store.currentAccount.address
-    return tronWeb
+    const aschWeb = new AschWeb(store.currentNetwork.fullNodeUrl, store.currentNetwork.solidityUrl, store.currentNetwork.eventGridUrl)
+    aschWeb.defaultAccount = store.currentAccount.address
+    return aschWeb
   }
 }
 /* eslint-disable no-new */

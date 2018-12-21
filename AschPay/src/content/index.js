@@ -4,7 +4,7 @@
 import { EncryptedStream } from 'extension-streams'
 import IdGenerator from '../lib/IdGenerator'
 import * as MessageTypes from '../messages/MessageTypes'
-import TronWeb from 'tronweb'
+import AschWeb from 'tronweb'
 import utils from '../lib/utils'
 import ExtensionHttpProvider from '../lib/ExtensionHttpProvider'
 import Message from '../messages/Message'
@@ -22,7 +22,7 @@ class DanglingResolver {
   }
 }
 
-const tronWeb = new TronWeb(
+const aschWeb = new AschWeb(
   new ExtensionHttpProvider('http://placeholder.dev'),
   new ExtensionHttpProvider('http://placeholder.dev')
 )
@@ -32,15 +32,15 @@ let resolvers = []
 
 const eventQueue = []
 
-tronWeb.eventServer = true
-tronWeb.ready = false
-tronWeb.isTronPay = true
+aschWeb.eventServer = true
+aschWeb.ready = false
+aschWeb.isTronPay = true
 
-const _sign = tronWeb.trx.sign.bind(tronWeb)
-const _setAddress = tronWeb.setAddress.bind(tronWeb)
-const _setEventServer = tronWeb.setEventServer.bind(tronWeb)
-const _getEventResult = tronWeb.getEventResult.bind(tronWeb)
-const _getEventByTransactionID = tronWeb.getEventByTransactionID.bind(tronWeb)
+const _sign = aschWeb.trx.sign.bind(aschWeb)
+const _setAddress = aschWeb.setAddress.bind(aschWeb)
+const _setEventServer = aschWeb.setEventServer.bind(aschWeb)
+const _getEventResult = aschWeb.getEventResult.bind(aschWeb)
+const _getEventByTransactionID = aschWeb.getEventByTransactionID.bind(aschWeb)
 
 const _subscribe = () => {
   stream.listenWith(msg => {
@@ -64,18 +64,18 @@ const _send = (_type, _payload) => {
   })
 }
 
-tronWeb.setPrivateKey = () => console.warn('Setting private key disabled in TronPay')
-tronWeb.setAddress = () => console.warn('Setting address disabled in TronPay')
-tronWeb.setFullNode = () => console.warn('Setting full node disabled in TronPay')
-tronWeb.setSolidityNode = () => console.warn('Setting solidity node disabled in TronPay')
-tronWeb.setEventServer = () => console.warn('Setting event server disabled in TronPay')
+aschWeb.setPrivateKey = () => console.warn('Setting private key disabled in TronPay')
+aschWeb.setAddress = () => console.warn('Setting address disabled in TronPay')
+aschWeb.setFullNode = () => console.warn('Setting full node disabled in TronPay')
+aschWeb.setSolidityNode = () => console.warn('Setting solidity node disabled in TronPay')
+aschWeb.setEventServer = () => console.warn('Setting event server disabled in TronPay')
 
 Object.entries({
   getEventResult: _getEventResult,
   getEventByTransactionID: _getEventByTransactionID
 }).forEach(([funcName, func]) => {
-  tronWeb[funcName] = (...args) => {
-    if (tronWeb.eventServer) return func(...args)
+  aschWeb[funcName] = (...args) => {
+    if (aschWeb.eventServer) return func(...args)
     let promise = false
     let success = false
     let failure = false
@@ -111,7 +111,7 @@ const customSignFunction = (transaction = false, privateKey = false, callbackFun
     return _sign(transaction, privateKey, callbackFunc)
   }
   if (!transaction) return callbackFunc('Invalid transaction provided')
-  if (!tronWeb.ready) return callbackFunc('User has not unlocked TronPay')
+  if (!aschWeb.ready) return callbackFunc('User has not unlocked TronPay')
   console.info('request signTransaction: ')
   console.info(transaction)
   _send(MessageTypes.SIGNATURE, {
@@ -123,17 +123,17 @@ const customSignFunction = (transaction = false, privateKey = false, callbackFun
   })
 }
 
-tronWeb.trx.sign = customSignFunction
-tronWeb.trx.signTransaction = customSignFunction
+aschWeb.trx.sign = customSignFunction
+aschWeb.trx.signTransaction = customSignFunction
 
-tronWeb.on('addressChanged', () => {
-  console.info('tronPay current account: ', tronWeb.defaultAddress.base58)
+aschWeb.on('addressChanged', () => {
+  console.info('tronPay current account: ', aschWeb.defaultAddress.base58)
 })
 
 export class TronPay {
   constructor () {
     this.ready = false
-    this.tronWeb = false
+    this.aschWeb = false
     this.version = manifest.version
   }
   /**
@@ -145,7 +145,7 @@ export class TronPay {
 }
 
 const tronPay = new TronPay()
-tronPay.tronWeb = tronWeb
+tronPay.aschWeb = aschWeb
 
 export default class Content {
   constructor () {
@@ -159,7 +159,7 @@ export default class Content {
       return console.warn('Failed to inject TronPay, The global namespace is exists')
     }
     window.tronPay = tronPay
-    window.tronWeb = tronWeb
+    window.aschWeb = aschWeb
     _subscribe()
   }
   contentListener (msg) {
@@ -169,7 +169,7 @@ export default class Content {
     let nonSyncMessage = Message.fromJson(msg)
     switch (msg.type) {
       case MessageTypes.INIT_TRONWEB:
-        this.initTronWeb(nonSyncMessage)
+        this.initAschWeb(nonSyncMessage)
         break
       case MessageTypes.SET_NODE:
         this.setNode(nonSyncMessage)
@@ -188,15 +188,15 @@ export default class Content {
         break
     }
   }
-  initTronWeb (message) {
-    console.log('tronPay init tronWeb')
+  initAschWeb (message) {
+    console.log('tronPay init aschWeb')
     const payload = message.payload
-    tronWeb.fullNode.setURL(payload.node.fullNode)
-    tronWeb.solidityNode.setURL(payload.node.solidityNode)
+    aschWeb.fullNode.setURL(payload.node.fullNode)
+    aschWeb.solidityNode.setURL(payload.node.solidityNode)
     _setEventServer(payload.node.eventServer)
     if (payload.address) {
       _setAddress(payload.address)
-      tronWeb.ready = true
+      aschWeb.ready = true
       tronPay.ready = true
     }
     eventQueue.forEach(({ resolve, reject, args, func }, index) => {
@@ -210,22 +210,22 @@ export default class Content {
   }
   setNode (message) {
     const payload = message.payload
-    tronWeb.fullNode.setUrl(payload.fullNode)
-    tronWeb.solidityNode.setURL(payload.solidityNode)
+    aschWeb.fullNode.setUrl(payload.fullNode)
+    aschWeb.solidityNode.setURL(payload.solidityNode)
     _setEventServer(payload.eventServer)
   }
   setAddress (message) {
     const payload = message.payload
     _setAddress(payload.address)
-    tronWeb.ready = true
+    aschWeb.ready = true
     tronPay.ready = true
   }
   setNetWork (message) {
     const payload = message.payload
-    tronWeb.fullNode.setURL(payload.network.fullNodeUrl)
-    tronWeb.solidityNode.setURL(payload.network.solidityUrl)
+    aschWeb.fullNode.setURL(payload.network.fullNodeUrl)
+    aschWeb.solidityNode.setURL(payload.network.solidityUrl)
     _setEventServer(payload.network.eventGridUrl)
-    console.info('tronWeb network changed: ')
+    console.info('aschWeb network changed: ')
     console.info(payload.network)
   }
   setlockStatus (message) {
@@ -233,7 +233,7 @@ export default class Content {
     if (payload.unlocked) {
       console.info('tronPay is unlocked')
     } else {
-      tronWeb.ready = false
+      aschWeb.ready = false
       tronPay.ready = false
       console.info('tronPay is locked')
     }

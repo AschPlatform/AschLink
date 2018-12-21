@@ -25,7 +25,7 @@ class Inject {
     stream = new EncryptedStream(MessageTypes.CONTENT, IdGenerator.text(64))
     stream.listenWith((msg) => this._contentListener(msg))
     stream.onSync(async () => {
-      this.initTronWeb()
+      this.initAschWeb()
     })
   }
   /**
@@ -75,7 +75,7 @@ class Inject {
       case TabMessageTypes.LOCK_STAUS:
         stream.send(Message.widthPayload(message.type, message.payload), MessageTypes.INJECTED)
         if (message.payload.unlocked) {
-          this.initTronWeb()
+          this.initAschWeb()
         }
         break
       case TabMessageTypes.ADDRESS_CHANGED:
@@ -131,7 +131,7 @@ class Inject {
     return InternalMessage.signal(InternalMessageTypes.GET_NETWORK)
       .send()
   }
-  async initTronWeb () {
+  async initAschWeb () {
     try {
       const address = await this.getAddress()
       const currentNetwork = await this.getNetwork()
@@ -140,12 +140,12 @@ class Inject {
         solidityNode: currentNetwork.solidityUrl,
         eventServer: currentNetwork.eventGridUrl
       }
-      // init webTron
+      // init webAsch
       stream.send(Message.widthPayload(MessageTypes.INIT_TRONWEB, { address, node }), MessageTypes.INJECTED)
       // Dispatching the loaded event to the web application.
       isReady = true
     } catch (e) {
-      console.log('init tronWeb Fail')
+      console.log('init aschWeb Fail')
     }
   }
 }

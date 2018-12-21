@@ -22,7 +22,7 @@ module.exports = merge(baseWebpack, {
       'process.env.NODE_ENV': '"development"'
     }),
     new ChromeReloadPlugin({
-      port: 9091,
+      port: 9093,
       manifest: path.join(__dirname, '..', 'src', 'manifest.js')
     }),
     new FriendlyErrorsPlugin()

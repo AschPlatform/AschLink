@@ -90,7 +90,7 @@
             <div class="btn-group">
               <el-button class="gradual-button three-btn" @click="goRecharge">{{$t('button.recharge')}}</el-button>
               <el-button class="gradual-button three-btn" @click="goTransfer">{{$t('button.transfer')}}</el-button>
-              <!-- <el-button class="gradual-button three-btn" @click="goResource">{{$t('button.resource')}}</el-button> -->
+              <el-button class="gradual-button three-btn" @click="goResource">{{$t('button.resource')}}</el-button>
             </div>
             <div class="translate-log-title mt15">
               <div class="log-line"></div>
